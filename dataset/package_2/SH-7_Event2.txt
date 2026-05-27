@@ -1,0 +1,34 @@
+MINISTRY OF CORPORATE AFFAIRS
+FORM SH-7: Notice to Registrar of alteration of share capital
+Pursuant to section 64(1) of the Companies Act, 2013
+
+1. Corporate Identity Number (CIN): U72900DL2022PTC405678
+2. Name of the Company: ZetaTech Solutions Private Limited
+3. Registered Office Address: 3rd Floor, Alpha Tower, Okhla Phase 3, New Delhi - 110020
+
+4. Purpose of filing: Increase in Authorised Share Capital
+5. Date of Shareholders' Resolution: 18/08/2024
+6. Type of Meeting: Extraordinary General Meeting (EGM)
+7. Place of Meeting: Registered Office
+
+8. Authorised Share Capital BEFORE Change:
+   - Equity Share Capital: 5,00,000 Equity Shares of Rs. 10 each (Total: Rs. 50,00,000)
+   - Preference Share Capital: NIL
+   - Unclassified Capital: NIL
+   - Total Capital Before: Rs. 50,00,000
+
+9. Description of Alteration (Increase):
+   - Increase in Equity Share Capital: 10,00,000 Equity Shares of Rs. 10 each (Total: Rs. 1,00,000,00)
+   - Increase in Preference Share Capital: 5,00,000 Series A Cumulative Compulsorily Convertible Preference Shares (CCPS) of Rs. 10 each (Total: Rs. 50,00,000)
+
+10. Authorised Share Capital AFTER Change:
+    - Equity Share Capital: 15,00,000 Equity Shares of Rs. 10 each (Total: Rs. 1,50,00,000)
+    - Preference Share Capital: 5,00,000 Series A CCPS of Rs. 10 each (Total: Rs. 50,00,000)
+    - Total Capital After: Rs. 2,00,00,000
+
+11. Signed for and on behalf of ZetaTech Solutions Private Limited
+    Name: Priya Patel
+    Designation: Director
+    DIN: 08976543
+    Date of signing: 04/09/2024
+    Filing Date: 05/09/2024

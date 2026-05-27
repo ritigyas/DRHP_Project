@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZetaTech | DRHP Authorised Share Capital Agent Dashboard</title>
+  <meta name="description" content="AI-powered corporate intelligence and drafting agent for regulatory Form SH-7 analysis and automatic DRHP Share Capital verification.">
+  
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- React CDNs -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    :root {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+      font-weight: 400;
+
+      /* Premium Dark Theme */
+      --bg-primary: hsl(230, 25%, 7%);
+      --bg-secondary: hsla(230, 25%, 12%, 0.7);
+      --bg-tertiary: hsl(230, 25%, 16%);
+      
+      --accent-primary: hsl(265, 85%, 65%);
+      --accent-primary-hover: hsl(265, 85%, 75%);
+      --accent-primary-glow: hsla(265, 85%, 65%, 0.35);
+      
+      --accent-secondary: hsl(210, 85%, 55%);
+      
+      --text-primary: hsl(0, 0%, 96%);
+      --text-secondary: hsl(225, 12%, 75%);
+      --text-muted: hsl(225, 8%, 55%);
+
+      --border-color: hsla(230, 25%, 25%, 0.4);
+      --border-color-glow: hsla(265, 85%, 65%, 0.45);
+      
+      /* Status Colors */
+      --color-success: hsl(145, 80%, 45%);
+      --color-success-bg: hsla(145, 80%, 45%, 0.12);
+      --color-success-glow: hsla(145, 80%, 45%, 0.35);
+      
+      --color-warning: hsl(35, 90%, 55%);
+      --color-warning-bg: hsla(35, 90%, 55%, 0.12);
+      --color-warning-glow: hsla(35, 90%, 55%, 0.35);
+      
+      --color-danger: hsl(355, 85%, 55%);
+      --color-danger-bg: hsla(355, 85%, 55%, 0.12);
+      --color-danger-glow: hsla(355, 85%, 55%, 0.35);
+
+      --glass-blur: blur(16px);
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at 50% 0%, hsl(265, 30%, 15%) 0%, var(--bg-primary) 70%);
+      background-attachment: fixed;
+      color: var(--text-primary);
+      box-sizing: border-box;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Outfit', 'Inter', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-top: 0;
+    }
+
+    /* Glassmorphism panel */
+    .glass-panel {
+      background: var(--bg-secondary);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      box-shadow: var(--glass-shadow);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-panel:hover {
+      border-color: hsla(265, 85%, 65%, 0.25);
+      box-shadow: 0 12px 40px 0 rgba(108, 43, 217, 0.15);
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-primary);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .app-container {
+      max-width: 1400px;
+      width: 92%;
+      margin: 2rem auto;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1.5rem;
+    }
+
+    .company-badge {
+      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .main-title {
+      font-size: 2.25rem;
+      font-weight: 800;
+      background: linear-gradient(to right, var(--text-primary) 30%, var(--text-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0.5rem 0 0.25rem 0;
+    }
+
+    .sub-title {
+      color: var(--text-muted);
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: none;
+      outline: none;
+    }
+
+    .btn-primary {
+      background: var(--accent-primary);
+      color: var(--text-primary);
+      box-shadow: 0 4px 14px var(--accent-primary-glow);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px hsla(265, 85%, 65%, 0.5);
+    }
+
+    .btn-secondary {
+      background: hsla(230, 25%, 20%, 0.6);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+
+    .btn-secondary:hover {
+      background: hsla(230, 25%, 25%, 0.8);
+      color: var(--text-primary);
+      border-color: var(--accent-primary);
+    }
+
+    /* Upload zone */
+    .upload-zone {
+      border: 2px dashed var(--border-color);
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: hsla(230, 25%, 10%, 0.4);
+    }
+
+    .upload-zone:hover {
+      border-color: var(--accent-primary);
+      background: hsla(265, 85%, 65%, 0.04);
+    }
+
+    .upload-icon {
+      margin-bottom: 1rem;
+      color: var(--accent-primary);
+    }
+
+    /* Table styling */
+    .table-card {
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .table-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .table-title {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    .premium-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .premium-table th {
+      padding: 1rem 1.5rem;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-color);
+      background: hsla(230, 25%, 15%, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .premium-table td {
+      padding: 1.25rem 1.5rem;
+      font-size: 0.95rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-primary);
+      vertical-align: middle;
+    }
+
+    .premium-table tbody tr {
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .premium-table tbody tr:hover {
+      background: hsla(230, 25%, 20%, 0.4);
+    }
+
+    .premium-table tbody tr.selected {
+      background: hsla(265, 85%, 65%, 0.08);
+      border-left: 4px solid var(--accent-primary);
+    }
+
+    /* Badges */
+    .badge {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .badge-success {
+      background-color: var(--color-success-bg);
+      color: var(--color-success);
+      border: 1px solid hsla(145, 80%, 45%, 0.3);
+    }
+
+    .badge-warning {
+      background-color: var(--color-warning-bg);
+      color: var(--color-warning);
+      border: 1px solid hsla(35, 90%, 55%, 0.3);
+    }
+
+    .badge-danger {
+      background-color: var(--color-danger-bg);
+      color: var(--color-danger);
+      border: 1px solid hsla(355, 85%, 55%, 0.3);
+    }
+
+    /* Two-column layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.80fr 1.20fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .inspector-card {
+      position: sticky;
+      top: 2rem;
+    }
+
+    .inspector-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .inspector-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      background: hsla(230, 25%, 10%, 0.3);
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 1rem 0;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: hsla(230, 25%, 18%, 0.2);
+    }
+
+    .tab-btn.active {
+      color: var(--accent-primary-hover);
+      border-bottom-color: var(--accent-primary);
+      background: hsla(265, 85%, 65%, 0.05);
+    }
+
+    .inspector-content {
+      padding: 1.5rem;
+      max-height: 550px;
+      overflow-y: auto;
+    }
+
+    /* Compliance checklist logs */
+    .log-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid hsla(230, 25%, 25%, 0.2);
+    }
+
+    .log-item:last-child {
+      border-bottom: none;
+    }
+
+    .log-icon {
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+    }
+
+    .log-details h4 {
+      margin: 0 0 0.25rem 0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .log-details p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    /* Raw viewer */
+    .raw-viewer {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .raw-doc-selector {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+
+    .raw-tab {
+      background: hsla(230, 25%, 15%, 0.5);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 0.5rem 0.85rem;
+      font-size: 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.2s ease;
+    }
+
+    .raw-tab.active {
+      background: var(--accent-primary-glow);
+      color: var(--text-primary);
+      border-color: var(--accent-primary);
+    }
+
+    .raw-code-box {
+      background: hsl(230, 25%, 5%);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-family: 'Fira Code', 'Courier New', Courier, monospace;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      color: hsl(225, 20%, 85%);
+      max-height: 380px;
+      overflow-y: auto;
+    }
+
+    /* Spec grids */
+    .parameter-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .parameter-card {
+      background: hsla(230, 25%, 16%, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+    }
+
+    .parameter-card label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .parameter-card span {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- Inline SVG Helper Icons Component -->
+  <script type="text/babel">
+    const SvgIcon = ({ name, color = "currentColor", size = 16, className = "" }) => {
+      const paths = {
+        sparkles: (
+          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+        ),
+        upload: (
+          <g>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" x2="12" y1="3" y2="15" />
+          </g>
+        ),
+        folder: (
+          <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
+        ),
+        refresh: (
+          <g>
+            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <path d="M3 3v5h5" />
+            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+            <path d="M16 16h5v5" />
+          </g>
+        ),
+        shieldCheck: (
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z M9 11l2 2 4-4" />
+        ),
+        checkCircle: (
+          <g>
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </g>
+        ),
+        xCircle: (
+          <g>
+            <circle cx="12" cy="12" r="10" />
+            <line x1="15" x2="9" y1="9" y2="15" />
+            <line x1="9" x2="15" y1="9" y2="15" />
+          </g>
+        ),
+        alertTriangle: (
+          <g>
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+            <line x1="12" x2="12" y1="9" y2="13" />
+            <line x1="12" x2="12.01" y1="17" y2="17" />
+          </g>
+        ),
+        alertCircle: (
+          <g>
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" x2="12" y1="8" y2="12" />
+            <line x1="12" x2="12.01" y1="16" y2="16" />
+          </g>
+        ),
+        fileText: (
+          <g>
+            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+            <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+            <path d="M10 9H8" />
+            <path d="M16 13H8" />
+            <path d="M16 17H8" />
+          </g>
+        ),
+        sliders: (
+          <g>
+            <line x1="4" x2="4" y1="21" y2="14" />
+            <line x1="4" x2="4" y1="10" y2="3" />
+            <line x1="12" x2="12" y1="21" y2="12" />
+            <line x1="12" x2="12" y1="8" y2="3" />
+            <line x1="20" x2="20" y1="21" y2="16" />
+            <line x1="20" x2="20" y1="12" y2="3" />
+            <line x1="2" x2="6" y1="14" y2="14" />
+            <line x1="10" x2="14" y1="8" y2="8" />
+            <line x1="18" x2="22" y1="16" y2="16" />
+          </g>
+        )
+      };
+
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={color}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={className}
+        >
+          {paths[name] || <circle cx="12" cy="12" r="10" />}
+        </svg>
+      );
+    };
+
+    const API_BASE = 'http://127.0.0.1:8000';
+
+    function App() {
+      const [loading, setLoading] = React.useState(false);
+      const [results, setResults] = React.useState([]);
+      const [selectedRow, setSelectedRow] = React.useState(null);
+      const [activeInspectorTab, setActiveInspectorTab] = React.useState('audit');
+      const [activeDocumentType, setActiveDocumentType] = React.useState(null);
+      const [errorMsg, setErrorMsg] = React.useState('');
+
+      const fetchTable = async () => {
+        try {
+          const res = await fetch(`${API_BASE}/api/table`);
+          if (res.ok) {
+            const data = await res.json();
+            setResults(data.results || []);
+            if (data.results && data.results.length > 0) {
+              setSelectedRow(data.results[0]);
+              const firstDocs = Object.keys(data.results[0].raw_documents || {});
+              if (firstDocs.length > 0) {
+                setActiveDocumentType(firstDocs[0]);
+              }
+            }
+          }
+        } catch (e) {
+          console.error("Failed to fetch capital table", e);
+        }
+      };
+
+      React.useEffect(() => {
+        fetchTable();
+      }, []);
+
+      const handlePreloadLocal = async () => {
+        setLoading(true);
+        setErrorMsg('');
+        try {
+          const res = await fetch(`${API_BASE}/api/preload-local`, { method: 'POST' });
+          if (!res.ok) {
+            throw new Error("Failed to preload local workspace dataset.");
+          }
+          const data = await res.json();
+          setResults(data.results || []);
+          if (data.results && data.results.length > 0) {
+            setSelectedRow(data.results[0]);
+            const firstDocs = Object.keys(data.results[0].raw_documents || {});
+            if (firstDocs.length > 0) {
+              setActiveDocumentType(firstDocs[0]);
+            }
+          }
+        } catch (e) {
+          setErrorMsg("Backend server is not running. Please start the FastAPI backend on port 8000 first.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const handleReset = async () => {
+        setLoading(true);
+        setErrorMsg('');
+        try {
+          await fetch(`${API_BASE}/api/reset`, { method: 'POST' });
+          setResults([]);
+          setSelectedRow(null);
+          setActiveDocumentType(null);
+        } catch (e) {
+          setErrorMsg("Failed to reset backend cache.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const handleFileSelect = async (e) => {
+        const files = e.target.files;
+        if (files.length > 0) {
+          await uploadFiles(files);
+        }
+      };
+
+      const uploadFiles = async (files) => {
+        setLoading(true);
+        setErrorMsg('');
+        const formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+          formData.append('files', files[i]);
+        }
+
+        try {
+          const res = await fetch(`${API_BASE}/api/ingest`, {
+            method: 'POST',
+            body: formData
+          });
+          if (!res.ok) {
+            throw new Error("Ingest request failed.");
+          }
+          const data = await res.json();
+          setResults(data.results || []);
+          if (data.results && data.results.length > 0) {
+            setSelectedRow(data.results[0]);
+            const firstDocs = Object.keys(data.results[0].raw_documents || {});
+            if (firstDocs.length > 0) {
+              setActiveDocumentType(firstDocs[0]);
+            }
+          }
+        } catch (e) {
+          setErrorMsg("Failed to upload and ingest filings. Is the backend running?");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const handleRowClick = (row) => {
+        setSelectedRow(row);
+        const docTypes = Object.keys(row.raw_documents || {});
+        if (docTypes.length > 0 && (!activeDocumentType || !row.raw_documents[activeDocumentType])) {
+          setActiveDocumentType(docTypes[0]);
+        }
+      };
+
+      const formatCurrency = (val) => {
+        if (val === undefined || val === null) return '-';
+        if (typeof val === 'string') return val;
+        return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
+      };
+
+      const getParticulars = (row) => {
+        const before = formatCurrency(row.total_capital_before);
+        const after = formatCurrency(row.total_capital_after);
+        
+        if (row.event_id === 'Event1') {
+          return `Authorised capital increased from ${before} to ${after} by creating 4,90,000 Equity Shares.`;
+        } else if (row.event_id === 'Event2') {
+          return `Authorised capital increased from ${before} to ${after} by creating 10,00,000 Equity Shares and 5,00,000 Series A CCPS.`;
+        } else if (row.event_id === 'Event3') {
+          return `Authorised capital increased from ${before} to ${after} by creating 20,00,000 Equity Shares and 10,00,000 Series B CCPS.`;
+        }
+        return `Increase in Authorised Capital of ${formatCurrency(row.total_capital_after - row.total_capital_before)}.`;
+      };
+
+      return (
+        <div className="app-container animate-fade-in">
+          {/* Header */}
+          <header className="dashboard-header">
+            <div>
+              <div className="company-badge">
+                <SvgIcon name="sparkles" size={14} color="var(--accent-primary)" />
+                ZetaTech Solutions Private Limited
+              </div>
+              <h1 className="main-title">DRHP Capital Structure Agent</h1>
+              <p className="sub-title">Automated classification, extraction, and multi-doc verification engine for filings</p>
+            </div>
+            <div className="action-buttons">
+              <button className="btn btn-secondary" onClick={handleReset} disabled={loading}>
+                <SvgIcon name="refresh" size={16} />
+                Reset Cache
+              </button>
+              <button className="btn btn-primary" onClick={handlePreloadLocal} disabled={loading}>
+                <SvgIcon name="folder" size={16} />
+                Load Workspace Dataset
+              </button>
+            </div>
+          </header>
+
+          {/* Error Alerts */}
+          {errorMsg && (
+            <div className="glass-panel" style={{ borderColor: 'var(--color-danger)', background: 'var(--color-danger-bg)', padding: '1rem 1.5rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <SvgIcon name="alertCircle" size={20} color="var(--color-danger)" />
+              <span style={{ color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: 500 }}>{errorMsg}</span>
+            </div>
+          )}
+
+          {/* Upload Zone */}
+          {results.length === 0 && (
+            <div className="upload-zone glass-panel">
+              <input 
+                type="file" 
+                id="file-upload" 
+                multiple 
+                onChange={handleFileSelect} 
+                style={{ display: 'none' }} 
+              />
+              <label htmlFor="file-upload" style={{ cursor: 'pointer' }}>
+                <SvgIcon name="upload" size={48} className="upload-icon" />
+                <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.25rem' }}>Upload filings folder manually</h3>
+                <p style={{ margin: '0 0 1.5rem 0', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                  Select and upload Form SH-7, Board Resolutions, EGM Notices, and MOA clauses.
+                </p>
+                <span className="btn btn-primary">
+                  <SvgIcon name="fileText" size={16} />
+                  Select Files Manually
+                </span>
+              </label>
+            </div>
+          )}
+
+          {results.length > 0 && (
+            <div className="dashboard-grid animate-fade-in">
+              {/* Left Column: Compiled DRHP Table */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                
+                <div className="glass-panel table-card">
+                  <div className="table-header">
+                    <h3 className="table-title">
+                      <SvgIcon name="shieldCheck" size={20} color="var(--accent-primary)" />
+                      Consolidated DRHP Authorised Share Capital Change Table
+                    </h3>
+                    <span className="badge badge-success" style={{ fontSize: '0.75rem' }}>
+                      {results.filter(r => r.status === 'Confirmed').length}/{results.length} Verified
+                    </span>
+                  </div>
+                  <div className="table-wrapper">
+                    <table className="premium-table">
+                      <thead>
+                        <tr>
+                          <th>Date of Meeting / Resolution</th>
+                          <th>Particulars of Capital Alteration</th>
+                          <th>Pre-Event Capital (INR)</th>
+                          <th>Post-Event Capital (INR)</th>
+                          <th>AGM / EGM</th>
+                          <th>Verification Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {results.map((row) => (
+                          <tr 
+                            key={row.event_id} 
+                            className={selectedRow?.event_id === row.event_id ? 'selected' : ''}
+                            onClick={() => handleRowClick(row)}
+                          >
+                            <td style={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
+                              {row.egm_date || "[UNVERIFIED — date missing]"}
+                            </td>
+                            <td style={{ fontSize: '0.88rem', maxWidth: '350px' }}>
+                              <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.25rem' }}>
+                                {row.title}
+                              </div>
+                              <div style={{ color: 'var(--text-secondary)' }}>
+                                {getParticulars(row)}
+                              </div>
+                            </td>
+                            <td style={{ fontFamily: 'Fira Code', fontSize: '0.85rem' }}>
+                              {formatCurrency(row.total_capital_before)}
+                            </td>
+                            <td style={{ fontFamily: 'Fira Code', fontSize: '0.85rem', fontWeight: 600 }}>
+                              {formatCurrency(row.total_capital_after)}
+                            </td>
+                            <td style={{ fontFamily: 'Outfit', fontSize: '0.85rem', fontWeight: 700, textAlign: 'center' }}>
+                              <span style={{ background: 'hsla(230, 25%, 20%, 0.5)', padding: '0.25rem 0.6rem', borderRadius: '6px', border: '1px solid var(--border-color)', color: 'var(--accent-secondary)' }}>
+                                {row.meeting_type || "EGM"}
+                              </span>
+                            </td>
+                            <td>
+                              {row.status === 'Confirmed' ? (
+                                <span className="badge badge-success">
+                                  <SvgIcon name="checkCircle" size={12} color="var(--color-success)" />
+                                  Confirmed
+                                </span>
+                              ) : (
+                                <span className="badge badge-warning">
+                                  <SvgIcon name="alertTriangle" size={12} color="var(--color-warning)" />
+                                  Flagged
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Compliance description */}
+                <div className="glass-panel" style={{ padding: '1.5rem 2rem' }}>
+                  <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <SvgIcon name="checkCircle" size={18} color="var(--accent-primary)" />
+                    Drafting Agent Compliance Checklists
+                  </h3>
+                  <p style={{ margin: '0 0 1.25rem 0', color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.5 }}>
+                    Form SH-7 (pursuant to Section 64 of Companies Act 2013) demands that the company notify the ROC within 30 days of the resolution. The agent verifies filings in the background, matching totals and resolving dates.
+                  </p>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', fontSize: '0.85rem' }}>
+                    <div style={{ display: 'flex', gap: '0.5rem', color: 'var(--text-secondary)' }}>
+                      <SvgIcon name="checkCircle" size={14} color="var(--color-success)" style={{ marginTop: '2px' }} />
+                      <span>Cross-references shareholders EGM notices to ensure meeting dates correspond.</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem', color: 'var(--text-secondary)' }}>
+                      <SvgIcon name="checkCircle" size={14} color="var(--color-success)" style={{ marginTop: '2px' }} />
+                      <span>Validates board resolutions and traces whether they precede EGM calls.</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem', color: 'var(--text-secondary)' }}>
+                      <SvgIcon name="checkCircle" size={14} color="var(--color-success)" style={{ marginTop: '2px' }} />
+                      <span>Scrutinizes amended MOA Capital Clause V to double check class balances.</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem', color: 'var(--text-secondary)' }}>
+                      <SvgIcon name="checkCircle" size={14} color="var(--color-success)" style={{ marginTop: '2px' }} />
+                      <span>Flags any draft, unsigned, or mismatched regulatory filings automatically.</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Right Column: Metadata Inspector */}
+              {selectedRow && (
+                <div className="glass-panel inspector-card animate-fade-in">
+                  <div className="inspector-header">
+                    <div>
+                      <h3 style={{ margin: 0, fontSize: '1.15rem' }}>Filing Metadata Inspector</h3>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{selectedRow.title}</span>
+                    </div>
+                    {selectedRow.status === 'Confirmed' ? (
+                      <span className="badge badge-success">
+                        <SvgIcon name="checkCircle" size={12} color="var(--color-success)" />
+                        Verified
+                      </span>
+                    ) : (
+                      <span className="badge badge-warning">
+                        <SvgIcon name="alertTriangle" size={12} color="var(--color-warning)" />
+                        {selectedRow.anomalies.length} Alerts
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="inspector-tabs">
+                    <button 
+                      className={`tab-btn ${activeInspectorTab === 'audit' ? 'active' : ''}`}
+                      onClick={() => setActiveInspectorTab('audit')}
+                    >
+                      Audit Logs
+                    </button>
+                    <button 
+                      className={`tab-btn ${activeInspectorTab === 'data' ? 'active' : ''}`}
+                      onClick={() => setActiveInspectorTab('data')}
+                    >
+                      Extracted Specs
+                    </button>
+                    <button 
+                      className={`tab-btn ${activeInspectorTab === 'documents' ? 'active' : ''}`}
+                      onClick={() => setActiveInspectorTab('documents')}
+                    >
+                      Source Files
+                    </button>
+                  </div>
+
+                  <div className="inspector-content">
+                    {/* Audit Logs Tab */}
+                    {activeInspectorTab === 'audit' && (
+                      <div>
+                        <h4 style={{ margin: '0 0 1rem 0', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>Verification Checks</h4>
+                        {selectedRow.verification_logs.map((log, index) => (
+                          <div className="log-item" key={index}>
+                            <div className="log-icon">
+                              {log.status === 'PASS' && <SvgIcon name="checkCircle" size={18} color="var(--color-success)" />}
+                              {log.status === 'WARN' && <SvgIcon name="alertTriangle" size={18} color="var(--color-warning)" />}
+                              {log.status === 'FAIL' && <SvgIcon name="xCircle" size={18} color="var(--color-danger)" />}
+                            </div>
+                            <div className="log-details">
+                              <h4>{log.label}</h4>
+                              <p>{log.message}</p>
+                            </div>
+                          </div>
+                        ))}
+
+                        {selectedRow.anomalies.length > 0 && (
+                          <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'var(--color-danger-bg)', borderRadius: '8px', border: '1px solid hsla(355, 85%, 55%, 0.2)' }}>
+                            <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: 'var(--color-danger)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                              <SvgIcon name="alertCircle" size={16} color="var(--color-danger)" />
+                              Anomalies & Gaps Detected
+                            </h4>
+                            <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.85rem', color: 'var(--text-primary)', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                              {selectedRow.anomalies.map((anom, idx) => (
+                                <li key={idx}>{anom}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Extracted Specs Tab */}
+                    {activeInspectorTab === 'data' && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                        <h4 style={{ margin: '0', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>Extracted Parameter Registry</h4>
+                        
+                        <div className="parameter-grid">
+                          <div className="parameter-card">
+                            <label>EGM / Resolution Date</label>
+                            <span>{selectedRow.egm_date || '-'}</span>
+                          </div>
+                          <div className="parameter-card">
+                            <label>Filing Date</label>
+                            <span>{selectedRow.sh7_filing_date || '-'}</span>
+                          </div>
+                          <div className="parameter-card">
+                            <label>Total Pre Capital</label>
+                            <span style={{ fontFamily: 'Fira Code', fontSize: '0.9rem' }}>{formatCurrency(selectedRow.total_capital_before)}</span>
+                          </div>
+                          <div className="parameter-card">
+                            <label>Total Post Capital</label>
+                            <span style={{ fontFamily: 'Fira Code', fontSize: '0.9rem' }}>{formatCurrency(selectedRow.total_capital_after)}</span>
+                          </div>
+                          <div className="parameter-card">
+                            <label>Equity Shares Post</label>
+                            <span>{selectedRow.equity_shares_after ? selectedRow.equity_shares_after.toLocaleString('en-IN') : '0'} Shares</span>
+                          </div>
+                          <div className="parameter-card">
+                            <label>Preference Shares Post</label>
+                            <span>{selectedRow.pref_shares_after ? selectedRow.pref_shares_after.toLocaleString('en-IN') : '0'} Shares</span>
+                          </div>
+                        </div>
+
+                        <div className="parameter-card" style={{ width: '100%', boxSizing: 'border-box' }}>
+                          <label>Preference Share Details / Class</label>
+                          <span style={{ fontSize: '0.9rem' }}>{selectedRow.pref_class_after || 'NIL'}</span>
+                        </div>
+
+                        <div className="parameter-card" style={{ width: '100%', boxSizing: 'border-box' }}>
+                          <label>Active Filers & Signatories</label>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', marginTop: '0.25rem' }}>
+                            {Object.entries(selectedRow.raw_documents).map(([type, doc]) => (
+                              <div key={type} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', borderBottom: '1px solid hsla(230,25%,25%,0.15)', paddingBottom: '0.25rem' }}>
+                                <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>{type}:</span>
+                                <span style={{ marginLeft: 'auto', color: 'var(--text-primary)' }}>
+                                  {doc.parsed_data.signatory_name || doc.parsed_data.signatory_din || 'N/A'} 
+                                  {doc.classification.filing_status === 'DRAFT' && ' [DRAFT]'}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Source Files Tab */}
+                    {activeInspectorTab === 'documents' && (
+                      <div className="raw-viewer animate-fade-in">
+                        <div className="raw-doc-selector">
+                          {Object.keys(selectedRow.raw_documents).map((docType) => (
+                            <button
+                              key={docType}
+                              className={`raw-tab ${activeDocumentType === docType ? 'active' : ''}`}
+                              onClick={() => setActiveDocumentType(docType)}
+                            >
+                              {docType.replace('_', ' ')}
+                            </button>
+                          ))}
+                        </div>
+
+                        {activeDocumentType && selectedRow.raw_documents[activeDocumentType] && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                                File: <strong style={{ color: 'var(--text-secondary)' }}>{selectedRow.raw_documents[activeDocumentType].filename}</strong>
+                              </span>
+                              <span className={`badge ${selectedRow.raw_documents[activeDocumentType].classification.filing_status === 'DRAFT' ? 'badge-warning' : 'badge-success'}`} style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', marginLeft: 'auto' }}>
+                                {selectedRow.raw_documents[activeDocumentType].classification.filing_status}
+                              </span>
+                            </div>
+                            <div className="raw-code-box">
+                              {selectedRow.raw_documents[activeDocumentType].content}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    const container = document.getElementById('root');
+    const root = ReactDOM.createRoot(container);
+    root.render(<App />);
+  </script>
+</body>
+</html>
